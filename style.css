@@ -1,0 +1,101 @@
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #faf8ef;
+}
+
+.game-container {
+    text-align: center;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+#score {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+button {
+    background-color: #8f7a66;
+    color: #fff;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+button:hover {
+    background-color: #7a6a5b;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(4, 100px);
+    grid-template-rows: repeat(4, 100px);
+    gap: 10px;
+    background-color: #bbada0;
+    padding: 10px;
+    border-radius: 10px;
+    position: relative;
+    width: max-content;
+    margin: 0 auto;
+}
+
+.tile {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #eee4da;
+    border-radius: 5px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #776e65;
+    transition: transform 0.1s ease-in-out;
+}
+
+.tile[data-value="2"] {
+    background-color: #eee4da;
+}
+
+.tile[data-value="4"] {
+    background-color: #ede0c8;
+}
+
+.tile[data-value="8"] {
+    background-color: #f2b179;
+    color: #fff;
+}
+
+.tile[data-value="16"] {
+    background-color: #f59563;
+    color: #fff;
+}
+
+.tile[data-value="32"] {
+    background-color: #f67c5f;
+    color: #fff;
+}
+
+.tile[data-value="64"] {
+    background-color: #f65e3b;
+    color: #fff;
+}
+
+.tile[data-value="128"],
+.tile[data-value="256"],
+.tile[data-value="512"],
+.tile[data-value="1024"],
+.tile[data-value="2048"] {
+    background-color: #edcf72;
+    color: #fff;
+}

@@ -2,6 +2,7 @@ const boardSize = 4;
 let gameState = [];
 let score = 0;
 let record = localStorage.getItem('record') || 0;
+let moveCooldown = false;
 
 // Инициализация игры
 function initializeGame() {
@@ -58,6 +59,8 @@ function updateRecord() {
 
 // Обработка перемещения
 function move(direction) {
+    if (moveCooldown) return;
+    moveCooldown = true;
     let moved = false;
 
     const moveLine = (line) => {
@@ -99,6 +102,10 @@ function move(direction) {
         document.getElementById('score').innerText = `Score: ${score}`;
         updateRecord();
     }
+
+    setTimeout(() => {
+        moveCooldown = false;
+    }, 150); // Минимальная задержка для обработки
 }
 
 // Управление клавишами

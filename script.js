@@ -60,16 +60,16 @@ function updateRecord() {
     document.getElementById('record').innerText = `Record: ${record}`;
 }
 
-// Проверка на возможность движения
-function canMove() {
+// Проверка на конец игры
+function isGameOver() {
     for (let row = 0; row < boardSize; row++) {
         for (let col = 0; col < boardSize; col++) {
-            if (gameState[row][col] === 0) return true;
-            if (col < boardSize - 1 && gameState[row][col] === gameState[row][col + 1]) return true;
-            if (row < boardSize - 1 && gameState[row][col] === gameState[row + 1][col]) return true;
+            if (gameState[row][col] === 0) return false; // Есть пустая ячейка
+            if (col < boardSize - 1 && gameState[row][col] === gameState[row][col + 1]) return false; // Возможность слияния по горизонтали
+            if (row < boardSize - 1 && gameState[row][col] === gameState[row + 1][col]) return false; // Возможность слияния по вертикали
         }
     }
-    return false;
+    return true; // Нет доступных ходов
 }
 
 // Обработка перемещения
@@ -80,16 +80,22 @@ function move(direction) {
     let moved = false;
 
     const moveLine = (line) => {
-        const filtered = line.filter(value => value !== 0);
-        for (let i = 0; i < filtered.length - 1; i++) {
-            if (filtered[i] === filtered[i + 1]) {
-                filtered[i] *= 2;
-                score += filtered[i];
-                filtered[i + 1] = 0;
-                moved = true;
+        const filtered = line.filter(value => value !== 0); // Убираем нули
+        const result = Array(boardSize).fill(0);
+
+        let targetIndex = 0;
+        for (let i = 0; i < filtered.length; i++) {
+            if (i < filtered.length - 1 && filtered[i] === filtered[i + 1]) {
+                result[targetIndex] = filtered[i] * 2;
+                score += result[targetIndex];
+                i++; // Пропускаем следующий, так как он уже сложен
+            } else {
+                result[targetIndex] = filtered[i];
             }
+            targetIndex++;
         }
-        return filtered.filter(value => value !== 0);
+        if (result.join('') !== line.join('')) moved = true; // Флаг, что движение было
+        return result;
     };
 
     for (let i = 0; i < boardSize; i++) {
@@ -103,10 +109,8 @@ function move(direction) {
         for (let j = 0; j < boardSize; j++) {
             const value = finalLine[j] || 0;
             if (direction === 'left' || direction === 'right') {
-                if (gameState[i][j] !== value) moved = true;
                 gameState[i][j] = value;
             } else {
-                if (gameState[j][i] !== value) moved = true;
                 gameState[j][i] = value;
             }
         }
@@ -118,6 +122,12 @@ function move(direction) {
         document.getElementById('score').innerText = `Score: ${score}`;
         updateRecord();
         moveSound.play(); // Проигрывание звука
+    }
+
+    if (isGameOver()) {
+        setTimeout(() => {
+            alert('Game Over!');
+        }, 200);
     }
 
     setTimeout(() => {

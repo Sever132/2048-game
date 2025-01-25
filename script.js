@@ -1,13 +1,13 @@
 const boardSize = 4;
 let gameState = [];
 let score = 0;
+let record = localStorage.getItem('record') || 0;
 
 // Инициализация игры
 function initializeGame() {
-    gameState = Array(boardSize)
-        .fill(null)
-        .map(() => Array(boardSize).fill(0));
+    gameState = Array(boardSize).fill(null).map(() => Array(boardSize).fill(0));
     score = 0;
+    updateRecord();
     document.getElementById('score').innerText = `Score: ${score}`;
     spawnNewTile();
     spawnNewTile();
@@ -47,61 +47,57 @@ function spawnNewTile() {
     gameState[row][col] = Math.random() < 0.9 ? 2 : 4;
 }
 
+// Обновление рекорда
+function updateRecord() {
+    if (score > record) {
+        record = score;
+        localStorage.setItem('record', record);
+    }
+    document.getElementById('record').innerText = `Record: ${record}`;
+}
+
 // Обработка перемещения
 function move(direction) {
-    const merged = new Set();
-    let moved = false; // Флаг, отслеживающий изменения в игровом поле
+    let moved = false;
 
     const moveLine = (line) => {
-        const filtered = line.filter((value) => value !== 0);
+        const filtered = line.filter(value => value !== 0);
         for (let i = 0; i < filtered.length - 1; i++) {
-            if (filtered[i] === filtered[i + 1] && !merged.has(i)) {
+            if (filtered[i] === filtered[i + 1]) {
                 filtered[i] *= 2;
                 score += filtered[i];
                 filtered[i + 1] = 0;
-                merged.add(i);
-                moved = true; // Плитки объединились
+                moved = true;
             }
         }
-        return filtered.filter((value) => value !== 0);
+        return filtered.filter(value => value !== 0);
     };
 
     for (let i = 0; i < boardSize; i++) {
         const line = [];
         for (let j = 0; j < boardSize; j++) {
-            line.push(
-                direction === 'left' || direction === 'right'
-                    ? gameState[i][j]
-                    : gameState[j][i]
-            );
+            line.push(direction === 'left' || direction === 'right' ? gameState[i][j] : gameState[j][i]);
         }
-
-        const originalLine = [...line]; // Сохраняем оригинальную строку/столбец для сравнения
         const movedLine = moveLine(direction === 'right' || direction === 'down' ? line.reverse() : line);
         const finalLine = direction === 'right' || direction === 'down' ? movedLine.reverse() : movedLine;
 
         for (let j = 0; j < boardSize; j++) {
             const value = finalLine[j] || 0;
             if (direction === 'left' || direction === 'right') {
-                if (gameState[i][j] !== value) moved = true; // Изменение в плитке
+                if (gameState[i][j] !== value) moved = true;
                 gameState[i][j] = value;
             } else {
-                if (gameState[j][i] !== value) moved = true; // Изменение в плитке
+                if (gameState[j][i] !== value) moved = true;
                 gameState[j][i] = value;
             }
         }
-
-        // Если строка/столбец не изменился, перемещение не было
-        if (JSON.stringify(originalLine) !== JSON.stringify(finalLine)) {
-            moved = true;
-        }
     }
 
-    // Спавним новую плитку только если что-то изменилось
     if (moved) {
         spawnNewTile();
         renderBoard();
         document.getElementById('score').innerText = `Score: ${score}`;
+        updateRecord();
     }
 }
 

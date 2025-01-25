@@ -10,15 +10,29 @@ body {
 
 .game-container {
     text-align: center;
+    max-width: 100%;
+    padding: 10px;
+}
+
+.logo-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.logo {
+    max-width: 150px;
 }
 
 .header {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
+    gap: 10px;
 }
 
-#score {
+#score, #record {
     font-size: 24px;
     font-weight: bold;
 }
@@ -40,14 +54,15 @@ button:hover {
 
 .board {
     display: grid;
-    grid-template-columns: repeat(4, 100px);
-    grid-template-rows: repeat(4, 100px);
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: 100px;
     gap: 10px;
     background-color: #bbada0;
     padding: 10px;
     border-radius: 10px;
     position: relative;
-    width: max-content;
+    width: 100%;
+    max-width: 400px;
     margin: 0 auto;
 }
 
@@ -63,39 +78,31 @@ button:hover {
     transition: transform 0.1s ease-in-out;
 }
 
-.tile[data-value="2"] {
-    background-color: #eee4da;
-}
-
-.tile[data-value="4"] {
-    background-color: #ede0c8;
-}
-
-.tile[data-value="8"] {
-    background-color: #f2b179;
-    color: #fff;
-}
-
-.tile[data-value="16"] {
-    background-color: #f59563;
-    color: #fff;
-}
-
-.tile[data-value="32"] {
-    background-color: #f67c5f;
-    color: #fff;
-}
-
-.tile[data-value="64"] {
-    background-color: #f65e3b;
-    color: #fff;
-}
-
+.tile[data-value="2"] { background-color: #eee4da; }
+.tile[data-value="4"] { background-color: #ede0c8; }
+.tile[data-value="8"] { background-color: #f2b179; color: #fff; }
+.tile[data-value="16"] { background-color: #f59563; color: #fff; }
+.tile[data-value="32"] { background-color: #f67c5f; color: #fff; }
+.tile[data-value="64"] { background-color: #f65e3b; color: #fff; }
 .tile[data-value="128"],
 .tile[data-value="256"],
 .tile[data-value="512"],
 .tile[data-value="1024"],
 .tile[data-value="2048"] {
-    background-color: #edcf72;
-    color: #fff;
+    background-color: #edcf72; color: #fff;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 600px) {
+    .board {
+        grid-template-columns: repeat(4, 1fr);
+        grid-auto-rows: 75px;
+    }
+    .tile {
+        font-size: 18px;
+    }
+    button {
+        font-size: 16px;
+        padding: 8px 16px;
+    }
 }

@@ -2,7 +2,10 @@ const boardSize = 4;
 let gameState = [];
 let score = 0;
 let record = localStorage.getItem('record') || 0;
-let moveCooldown = false;
+let isMoving = false; // Флаг для предотвращения повторного движения
+
+// Звук движения
+const moveSound = document.getElementById('move-sound');
 
 // Инициализация игры
 function initializeGame() {
@@ -59,8 +62,9 @@ function updateRecord() {
 
 // Обработка перемещения
 function move(direction) {
-    if (moveCooldown) return;
-    moveCooldown = true;
+    if (isMoving) return; // Предотвращение повторного движения
+    isMoving = true;
+
     let moved = false;
 
     const moveLine = (line) => {
@@ -97,14 +101,15 @@ function move(direction) {
     }
 
     if (moved) {
-        spawnNewTile();
+        spawnNewTile(); // Создать новую плитку только если было движение
         renderBoard();
         document.getElementById('score').innerText = `Score: ${score}`;
         updateRecord();
+        moveSound.play(); // Проигрывание звука
     }
 
     setTimeout(() => {
-        moveCooldown = false;
+        isMoving = false; // Сбрасываем блокировку движения
     }, 150); // Минимальная задержка для обработки
 }
 

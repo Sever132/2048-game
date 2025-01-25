@@ -5,7 +5,7 @@ let record = localStorage.getItem('record') || 0;
 let isMoving = false; // Флаг для предотвращения повторного движения
 
 // Звук движения
-const moveSound = document.getElementById('move-sound');
+const moveSound = new Audio("move.mp3");
 
 // Инициализация игры
 function initializeGame() {
@@ -58,6 +58,18 @@ function updateRecord() {
         localStorage.setItem('record', record);
     }
     document.getElementById('record').innerText = `Record: ${record}`;
+}
+
+// Проверка на возможность движения
+function canMove() {
+    for (let row = 0; row < boardSize; row++) {
+        for (let col = 0; col < boardSize; col++) {
+            if (gameState[row][col] === 0) return true;
+            if (col < boardSize - 1 && gameState[row][col] === gameState[row][col + 1]) return true;
+            if (row < boardSize - 1 && gameState[row][col] === gameState[row + 1][col]) return true;
+        }
+    }
+    return false;
 }
 
 // Обработка перемещения
